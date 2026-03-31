@@ -30,9 +30,7 @@ set -e
 if [ "$REBASERC" -ne 0 ]; then
   echo "Rebase paused due to conflicts. Applying deterministic resolutions..."
 
-  # Prefer target branch versions for fast unblocking on high-churn generated/demo files.
-  CONFLICT_FILES=(
-    .gitignore
+  OUR_FILES=(
     BATTLE_TESTING.md
     scripts/execute_all.sh
     tests/battle_test.py
@@ -41,13 +39,24 @@ if [ "$REBASERC" -ne 0 ]; then
     webapp/styles.css
   )
 
-  for f in "${CONFLICT_FILES[@]}"; do
+  for f in "${OUR_FILES[@]}"; do
     if git ls-files -u -- "$f" | grep -q .; then
-      echo "Resolving $f with --theirs"
-      git checkout --theirs -- "$f"
+      echo "Resolving $f with --ours"
+      git checkout --ours -- "$f"
       git add "$f"
     fi
   done
+
+  if git ls-files -u -- .gitignore | grep -q .; then
+    echo "Resolving .gitignore by combining both sides"
+    ours_tmp=$(mktemp)
+    theirs_tmp=$(mktemp)
+    git show :2:.gitignore > "$ours_tmp" || true
+    git show :3:.gitignore > "$theirs_tmp" || true
+    cat "$ours_tmp" "$theirs_tmp" | awk 'NF && !seen[$0]++' > .gitignore
+    rm -f "$ours_tmp" "$theirs_tmp"
+    git add .gitignore
+  fi
 
   if git diff --name-only --diff-filter=U | grep -q .; then
     echo "Unresolved conflicts remain:" >&2
