@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  title: India Open Gridworks++ API
+  version: 0.1.0
+servers:
+  - url: https://api.example.com
+paths:
+  /layers:
+    get:
+      summary: List available map layers and metadata.
+      responses:
+        '200':
+          description: Layer metadata
+  /assets/search:
+    get:
+      summary: Search assets by text and filters.
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+        - in: query
+          name: asset_type
+          schema:
+            type: string
+        - in: query
+          name: state
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Matching assets
+  /assets/{id}:
+    get:
+      summary: Retrieve a full asset profile.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Asset profile
+        '404':
+          description: Asset not found
+  /graph/{id}:
+    get:
+      summary: Traverse upstream or downstream dependency graph.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: direction
+          required: true
+          schema:
+            type: string
+            enum: [upstream, downstream]
+        - in: query
+          name: depth
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 6
+      responses:
+        '200':
+          description: Graph nodes + edges
+  /tiles/{layer}/{z}/{x}/{y}:
+    get:
+      summary: Serve MVT vector tile.
+      parameters:
+        - in: path
+          name: layer
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: z
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: x
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: y
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: MVT tile bytes
+  /timeseries/{id}:
+    get:
+      summary: Fetch time series metrics for an asset.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: metric
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Time series points
+components:
+  schemas:
+    Asset:
+      type: object
+      properties:
+        asset_id: { type: string, format: uuid }
+        asset_type: { type: string }
+        name: { type: string }
+        status: { type: string }
+        geometry: { type: object }
+        technical_specs: { type: object }
+        confidence_score: { type: number }

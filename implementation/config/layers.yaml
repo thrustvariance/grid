@@ -1,0 +1,66 @@
+version: 1
+layers:
+  - layer_id: plants
+    group: power_system
+    display_name: Power Plants
+    default: true
+  - layer_id: tx
+    group: power_system
+    display_name: Transmission Lines
+    default: true
+  - layer_id: subs
+    group: power_system
+    display_name: Substations
+    default: true
+  - layer_id: rowTx
+    group: power_system
+    display_name: Transmission ROW Constraints
+  - layer_id: rowSubs
+    group: power_system
+    display_name: Substation ROW Constraints
+  - layer_id: hpoints
+    group: power_system
+    display_name: High Impact Nodes
+  - layer_id: datacenters
+    group: demand
+    display_name: Data Centers
+  - layer_id: coal_mines
+    group: supply_extraction
+    display_name: Coal Mines
+  - layer_id: lng_terminals
+    group: logistics
+    display_name: LNG Terminals
+  - layer_id: ports
+    group: logistics
+    display_name: Ports (Energy Handling)
+  - layer_id: gas_pipelines
+    group: logistics
+    display_name: Gas Pipelines
+  - layer_id: railheads
+    group: logistics
+    display_name: Railheads / Freight Hubs
+  - layer_id: refineries
+    group: conversion
+    display_name: Refineries
+  - layer_id: discom_boundaries
+    group: demand
+    display_name: DISCOM Boundaries
+  - layer_id: industrial_corridors
+    group: demand
+    display_name: Industrial Corridors
+  - layer_id: water_stress
+    group: risk
+    display_name: Water Stress
+  - layer_id: extreme_weather
+    group: risk
+    display_name: Flood/Cyclone/Heat Risk
+url_state_contract:
+  required:
+    - lat
+    - lng
+    - z
+    - layers
+    - panel
+  optional:
+    - selected
+    - time
