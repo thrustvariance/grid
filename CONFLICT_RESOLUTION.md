@@ -1,15 +1,25 @@
 # PR Conflict Resolution Playbook
 
-If GitHub shows conflicts on this branch, run the following locally:
+## Why GitHub still shows conflicts
+`.gitattributes` merge rules only help when they are already present in the merge base.
+If the PR was opened before those rules existed, GitHub can still report the same conflict set.
+
+## One-command fix (recommended)
 
 ```bash
-# 1) Add remote if needed
-# git remote add origin <repo-url>
+./scripts/resolve_pr_conflicts.sh
+```
 
-# 2) Fetch latest target branch
+This script:
+1. Fetches `origin/main`.
+2. Rebases your current branch onto `origin/main`.
+3. If conflicts occur in the known high-churn files, auto-resolves them with `--theirs` to unblock merge.
+4. Continues rebase when safe.
+
+## Manual fallback
+
+```bash
 git fetch origin
-
-# 3) Rebase current work branch onto target branch
 git checkout work
 git rebase origin/main
 ```
@@ -23,36 +33,15 @@ If conflicts appear in these files:
 - `webapp/index.html`
 - `webapp/styles.css`
 
-Use the branch version for the generated/demo assets:
+Use target branch versions for quickest unblock:
 
 ```bash
-git checkout --ours BATTLE_TESTING.md scripts/execute_all.sh tests/battle_test.py webapp/app.js webapp/index.html webapp/styles.css
-```
-
-For `.gitignore`, keep both sides where possible and ensure these entries exist:
-
-```gitignore
-artifacts/*.png
-artifacts/*.jpg
-artifacts/*.jpeg
-artifacts/*.webp
-artifacts/*.pdf
-artifacts/*.html
-artifacts/*.txt
-!artifacts/README.md
-build/
-dist/
-*.spec
-```
-
-Then continue:
-
-```bash
+git checkout --theirs .gitignore BATTLE_TESTING.md scripts/execute_all.sh tests/battle_test.py webapp/app.js webapp/index.html webapp/styles.css
 git add .
 git rebase --continue
 ```
 
-Run validation:
+## Validate after conflict resolution
 
 ```bash
 python3 tests/battle_test.py
