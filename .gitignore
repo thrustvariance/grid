@@ -1,0 +1,16 @@
+# Runtime/generated artifacts
+artifacts/*.png
+artifacts/*.jpg
+artifacts/*.jpeg
+artifacts/*.webp
+artifacts/*.pdf
+artifacts/*.html
+artifacts/*.txt
+
+# Keep docs
+!artifacts/README.md
+
+# PyInstaller outputs
+build/
+dist/
+*.spec
