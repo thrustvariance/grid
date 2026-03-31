@@ -1,0 +1,15 @@
+# Prefer current branch versions for generated/demo UX and automation files during merge conflict resolution.
+BATTLE_TESTING.md merge=ours
+scripts/execute_all.sh merge=ours
+tests/battle_test.py merge=ours
+webapp/app.js merge=ours
+webapp/index.html merge=ours
+webapp/styles.css merge=ours
+
+# Keep text merges line-ending consistent
+*.md text eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.js text eol=lf
+*.html text eol=lf
+*.css text eol=lf
